@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GoPlus</string>
+
+    <string name="service_started">服务已启动</string>
+</resources>
