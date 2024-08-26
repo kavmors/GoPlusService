@@ -15,6 +15,7 @@ import com.kavmors.goplus.port.PortCapability;
 import com.kavmors.goplus.port.PortSender;
 import com.kavmors.goplus.system.BatteryOperator;
 import com.kavmors.goplus.system.BrightnessMonitor;
+import com.kavmors.goplus.system.NetworkOperator;
 
 import java.io.IOException;
 
@@ -26,6 +27,7 @@ public class MonitorService extends Service {
     private PortCapability mCapability;
     private BrightnessMonitor mBrightness;
     private BatteryOperator mBattery;
+    private NetworkOperator mNetwork;
 
     public static void start(Context context) {
         context.startForegroundService(new Intent(context, MonitorService.class));
@@ -45,9 +47,11 @@ public class MonitorService extends Service {
         mBrightness = new BrightnessMonitor(this.getApplicationContext());
         mBattery = new BatteryOperator();
         mCapability = new PortCapability(PortSender.getInstance(this));
+        mNetwork = new NetworkOperator();
 
         initBrightness();
         initBatteryAndCharging();
+        initNetworkConfig();
 
         monitorBrightness();
         monitorBattery();
@@ -128,6 +132,15 @@ public class MonitorService extends Service {
             } else {
                 mBattery.setUncharge();
             }
+        } catch (IOException e) {
+            handleIOException(e);
+        }
+    }
+
+    private void initNetworkConfig() {
+        try {
+            mNetwork.initNtpServer();
+            mNetwork.initCaptiveUrl();
         } catch (IOException e) {
             handleIOException(e);
         }
