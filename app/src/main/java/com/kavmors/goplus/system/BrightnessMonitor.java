@@ -56,9 +56,11 @@ public final class BrightnessMonitor {
     }
 
     public void initProgress(int progress) {
+        int value = progress * BRIGHTNESS_MAX / 100;
+
         // su : settings put system $SCREEN_BRIGHTNESS $progress
         String cmd = String.format("settings put system %s %d",
-                Settings.System.SCREEN_BRIGHTNESS, progress);
+                Settings.System.SCREEN_BRIGHTNESS, value);
 
         try {
             Process su = Runtime.getRuntime().exec(SerialPort.getSuPath());

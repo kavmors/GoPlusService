@@ -53,6 +53,8 @@ public class MonitorService extends Service {
         initBatteryAndCharging();
         initNetworkConfig();
 
+        mNetwork.closeProcess();
+
         monitorBrightness();
         monitorBattery();
     }
@@ -86,13 +88,8 @@ public class MonitorService extends Service {
     }
 
     private void initBrightness() {
-        try {
-            int ttyValue = mCapability.getBacklight();
-            int progress = ttyValue * 100 / 2000;
-            mBrightness.initProgress(progress);
-        } catch (IOException e) {
-            handleIOException(e);
-        }
+        int process = mBrightness.getProgress();
+        changeBrightness(process);
     }
 
     private void monitorBattery() {
@@ -158,7 +155,7 @@ public class MonitorService extends Service {
     private Notification createNotification() {
         NotificationChannel channel = new NotificationChannel(
                 TAG, getString(R.string.app_name),
-                NotificationManager.IMPORTANCE_HIGH);
+                NotificationManager.IMPORTANCE_MIN);
         NotificationManager manager = (NotificationManager)
                 getSystemService(Context.NOTIFICATION_SERVICE);
         manager.createNotificationChannel(channel);
